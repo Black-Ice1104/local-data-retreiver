@@ -1,0 +1,8 @@
+config.env
+output.txt
+ChatGLM.py
+LangChainTest/
+docs-ee450/
+docs-ee538/
+db/
+__pycache__

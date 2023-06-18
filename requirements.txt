@@ -1,0 +1,6 @@
+duckdb
+chromadb
+openai
+torch
+unstructured
+tiktoken
