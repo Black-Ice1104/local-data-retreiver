@@ -1,5 +1,5 @@
-# Local Data Searcher
-The local data searcher uses OpenAI, LangChain and Chroma to achieve a search engine based on imported local data.
+# Local Data Retriever
+The local data retriever uses OpenAI, LangChain and Chroma to achieve a search engine based on imported local data.
 
 ## Operating Guide
 ### 1.  Config the environment parameters
