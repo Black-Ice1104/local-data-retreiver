@@ -4,5 +4,6 @@ ChatGLM.py
 LangChainTest/
 docs-ee450/
 docs-ee538/
+docs/
 db/
 __pycache__
