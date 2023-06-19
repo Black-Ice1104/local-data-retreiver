@@ -2,10 +2,8 @@
 import os
 import glob
 from typing import List
-
 from dotenv import load_dotenv
 from multiprocessing import Pool
-
 from langchain import FAISS
 from tqdm import tqdm
 import json
@@ -30,16 +28,14 @@ from langchain.embeddings import HuggingFaceEmbeddings, OpenAIEmbeddings
 from langchain.docstore.document import Document
 from constants import CHROMA_SETTINGS
 
-
 load_dotenv("config.env")
-
 
 #Load environment variables
 persist_directory = os.environ.get('PERSIST_DIRECTORY')
 source_directory = os.environ.get('SOURCE_DIRECTORY', 'source_documents')
 embeddings_model_name = os.environ.get('EMBEDDINGS_MODEL_NAME')
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-chunk_size = 500
+openai_api_key = os.environ.get('OPENAI_API_KEY')
+chunk_size = 400 # the size of each chunk
 chunk_overlap = 50
 
 
@@ -144,7 +140,7 @@ def does_vectorstore_exist(persist_directory: str) -> bool:
     return False
 
 def get_DB():
-    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=OPENAI_API_KEY)
+    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=openai_api_key)
     db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
     data = db.get()
     print(data)
@@ -152,18 +148,24 @@ def get_DB():
     #     file.write(json.dumps(data))
 
 def get_DB_keys():
-    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=OPENAI_API_KEY)
+    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=openai_api_key)
     db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
     data = db.get()
     keys = data.keys()
     print(keys)
     # print(data['embeddings'])
     # print(data['documents'])
-    # print(data['metadatas']) # 486 chunks
+    print(data['metadatas'])
+
+def clear_db():
+    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=openai_api_key)
+    db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
+    db.delete_collection()
+    print("The database has been cleared")
 
 def main():
     # Create embeddings
-    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=OPENAI_API_KEY)
+    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=openai_api_key)
 
     if does_vectorstore_exist(persist_directory):
         # Update and store locally vectorstore
@@ -183,13 +185,16 @@ def main():
 
 
 if __name__ == "__main__":
-    # slice the data and convert it to vectors
+    # delete all the data in the db
+    clear_db()
+
+    # slice the data, convert it to vectors and store it in db
     main()
 
-    # test
-    embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=OPENAI_API_KEY)
-    db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
-    print(db.similarity_search("What is the definition of DNS?"))
+    # # test
+    # embeddings = OpenAIEmbeddings(model=embeddings_model_name, openai_api_key=openai_api_key)
+    # db = Chroma(persist_directory=persist_directory, embedding_function=embeddings, client_settings=CHROMA_SETTINGS)
+    # print(db.similarity_search("What is the definition of DNS?"))
 
-    # delete all the data in the db
-    # db.delete_collection()
+
+    # get_DB_keys()
