@@ -1,6 +1,5 @@
 import argparse
 import os
-
 from langchain import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI, openai
