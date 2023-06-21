@@ -34,3 +34,5 @@ We use docIndex.py to
 Use **exit** to terminate the program
     
     exit
+
+[Reference](https://github.com/zhaoqingpu/LangChainTest)
